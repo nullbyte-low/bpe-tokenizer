@@ -1,9 +1,3 @@
-This is a solid, clean implementation of the Byte-Pair Encoding (BPE) algorithm in Python\! The separation of the training logic (`BPE.py`) and the usage logic (`main.py`) is excellent.
-
-I'll provide the requested **`README.md`** file, which explains the project structure, how to run the code, and how the BPE process works.
-
------
-
 # 📚 BPE Text Tokenizer
 
 A complete, from-scratch implementation of the Byte-Pair Encoding (BPE) algorithm for text tokenization and vocabulary building, written in Python.
@@ -15,6 +9,43 @@ A complete, from-scratch implementation of the Byte-Pair Encoding (BPE) algorith
   * **Decoding (`main.py`):** Reconstructs text from token IDs.
   * **Persistent Vocab:** Saves and loads the vocabulary in JSON format for re-use.
   * **Out-of-Vocabulary (OOV) Handling:** Uses an `[UNK]` token for unknown characters/sequences.
+
+
+## ⚠️ Current Implementation Status & Future Plans
+
+### **Data Cleanliness**
+
+The current implementation treats the input corpus and the resulting vocabulary (**`Vocabs/`**) as a raw output of the BPE process.
+
+  * **Status:** The training data (corpus) is **not cleaned or normalized** (e.g., lowercased, punctuation removed) before processing.
+  * **Result:** This leads to a **"messy" vocabulary** where tokens may exist in multiple cases (e.g., `the`, `The`, `THE`). However, the code is working *as intended* based on the raw input.
+  * **Future:** A cleaner, more production-ready version **will be made** to properly handle text normalization for higher quality vocabularies.
+
+### **Whitespace Handling**
+
+A special mechanism is used in `BPE.py` to ensure the original spacing can be perfectly reconstructed during decoding.
+
+  * **Method:** The `segmentation_of_word_plus_enhancement` function explicitly **appends a space** to every word token *except* the last word in a sentence. This ensures that the whitespace is always part of a token (e.g., `s` + `     ` becomes ` s  `).
+  * **Example:** In the phrase `it's amazing`, the tokenization leads to a split like `['it', "'", 's ', 'am', 'az', 'ing ']`. Notice the trailing spaces on `'s '` and `'ing '`. This allows for perfect decoding later.
+
+
+## 🧠 BPE Algorithm Logic
+
+### **Local Updates vs. Global Updates**
+
+The training logic is carefully optimized to avoid recalculating all pairs in the entire corpus at every step:
+
+  * The `local_updater_using_occurance` function only updates the pair frequencies **for words that contain the newly merged pair**.
+  * This approach significantly speeds up the training process compared to a naive global recalculation after every single merge.
+
+### **Pruning (Inconvenient but Necessary)**
+
+The `pruning_of_pair_with_n_than_1` function handles the cleanup of the global pair frequency map (`global_freq`):
+
+  * **Function:** It removes any token pairs whose count drops to **1 or less** after a merge step.
+  * **Inconvenience:** This check is currently performed over the *entire* `global_freq` map, which can become large.
+  * **Reasoning:** While it's computationally inconvenient, it prevents the algorithm from wasting time attempting to merge extremely rare pairs that are unlikely to contribute meaningfully to the vocabulary size.
+
 
 ## 📂 Project Structure
 

@@ -45,7 +45,7 @@ def segmentation_of_word_plus_enhancement(corpus):
         words = texte.split(" ")
         for i, word in enumerate(words):
             if i == len(words) - 1:
-                tokens.append(word)
+                tokens.append(word) # ferme la porte. -> "ferme "
                 break
             word += " "
             tokens.append(word)

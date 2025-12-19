@@ -52,7 +52,7 @@ def decode(tokens, voc):
 
 
 if __name__ == "__main__":
-    voc = load_vocab("/home/sebastien/Documents/bpe/Vocabs/Vocab_of_Belle-Rose_by_Amédée_Achard.json") # put your voacabs path here
+    voc = load_vocab("/home/sebastien/Documents/bpe/Vocabs/Vocab_of_candide.json")
 
     while True:
         print("##NOTE##\n tous est permis")
